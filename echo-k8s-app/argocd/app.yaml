@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: echo-server
+  namespace: default
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/omegion/echo-k8s-app/
+    targetRevision: HEAD
+    path: kubernetes
+    directory:
+      recurse: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: echo-server
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false

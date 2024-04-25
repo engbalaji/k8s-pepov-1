@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"name": "devops-directive-terraform-course",
+			"path": "../../../devops-directive-terraform-course"
+		}
+	],
+	"settings": {}
+}
