@@ -18,5 +18,4 @@ resource "docker_image" "example" {
   build {
     path = "./Dockerfile"
   }
-  }
 }
