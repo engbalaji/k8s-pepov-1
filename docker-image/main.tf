@@ -17,6 +17,6 @@ resource "docker_image" "example" {
 
   build {
     context    = path.module
-    dockerfile = ./Dockerfile
+    dockerfile = "Dockerfile"
   }
 }
