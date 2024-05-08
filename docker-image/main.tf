@@ -16,7 +16,7 @@ resource "docker_image" "example" {
   keep_locally = false
 
   build {
-    context    = path.module
-    dockerfile = "Dockerfile"
+    path = "./Dockerfile"
+  }
   }
 }
