@@ -1,21 +1,23 @@
 terraform {
   required_providers {
     docker = {
-      source = "kreuzwerker/docker"
-      version = "2.23.1"
+      source  = "kreuzwerker/docker"
+      version = "2.16.0"
     }
   }
 }
 
 provider "docker" {
-  host = "tcp://localhost:2375"
+  host = "unix:///var/run/docker.sock"
 }
 
-resource "docker_image" "example" {
-  name         = "example:latest"
-  keep_locally = false
+# Pulls the image
+resource "docker_image" "ubuntu" {
+  name = "ubuntu:latest"
+}
 
-  build {
-    path = "./Dockerfile"
-  }
+# Create a container
+resource "docker_container" "foo" {
+  image = docker_image.ubuntu.latest
+  name  = "foo"
 }
