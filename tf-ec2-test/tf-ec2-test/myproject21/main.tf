@@ -17,5 +17,5 @@ resource "aws_instance" "example1" {
 
 # output.tf
 output "instance1_public_ip" {
-  value = aws_instance.example1.public_ip
+  value = aws_instance.example1.instance_private_ip
 }
