@@ -3,13 +3,18 @@ provider "aws" {
 }
 
 resource "aws_instance" "example" {
-
-
-  instance_id = var.instance_id
+  ami           = var.ami_id
+  instance_type = var.instance_type
+  tags = {
+    Name = var.instance1_name
+  }
 }
 
-resource "aws_ec2_instance_state" "example" {
-  instance_id = aws_instance.example.id
-  state       = "stopped"
+resource "null_resource" "stop_instance" {
+  depends_on = [aws_instance.example]
+
+  provisioner "local-exec" {
+    command = "aws ec2 stop-instances --instance-ids ${aws_instance.example.id}"
+  }
 }
 
