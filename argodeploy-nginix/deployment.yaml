@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx
+  name: tweetapp-pepoc-test2
   namespace: default
   labels:
-    app.kubernetes.io/name: nginx
+    app.kubernetes.io/name: tweetapp-pepoc-test2
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app.kubernetes.io/name: nginx
+      app.kubernetes.io/name: tweetapp-pepoc-test2
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: nginx
+        app.kubernetes.io/name: tweetapp-pepoc-test2
     spec:
       containers:
-      - name: nginx
-        image: 960456129040.dkr.ecr.us-east-1.amazonaws.com/pepoc-test1:latest
+      - name: tweetapp-pepoc-test2
+        image: 960456129040.dkr.ecr.us-east-1.amazonaws.com/tweetapp-pepoc-test2:latest
         ports:
           - name: http
             containerPort: 80
