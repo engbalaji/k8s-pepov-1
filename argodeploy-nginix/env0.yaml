@@ -7,7 +7,8 @@ deploy:
         - name: trigger Jenkins
           run: |
             echo "Executing Jenkins pipeline"
-            curl --user $user:$token "$JENKINS_URL/job/$JOB_NAME?delay=0sec" -X POST
+            #curl --user $user:$token "$JENKINS_URL/job/$JOB_NAME?delay=0sec" -X POST
+            curl -X POST $JENKINS_URL/job/$JOB_NAME/build --user $user:$token
         - name: wait for Jenkins jobs to complete
           run: | 
             while true; do
