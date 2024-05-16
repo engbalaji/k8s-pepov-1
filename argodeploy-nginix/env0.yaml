@@ -12,7 +12,7 @@ deploy:
           run: | 
             while true; do
               # Make a GET request to your Jenkins API and store the JSON response in a variable
-              response=$(curl -s "$JENKINS_URL/job/$JOB_NAME/lastBuild/api/json")
+              response=$(curl --user $user:$token -s "$JENKINS_URL/job/$JOB_NAME/lastBuild/api/json")
               # Extract the result field from the JSON response using jq (a command-line JSON processor)
               result=$(echo "$response" | jq -r '.result')
               # Check if the result is "true"
