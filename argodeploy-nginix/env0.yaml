@@ -4,23 +4,23 @@ deploy:
   steps:
     setupVariables:
       after:
-      - name: trigger jenkins
-        run: |
-          echo "Executing Jenkins pipeline"
-          curl --user $user:$token "$JENKINS_URL/job/$JOB_NAME?delay=0sec" -X POST
-      - name: wait for jenkins jobs to complete 
-        run: | 
-          while true; do
-        # Make a GET request to your Jenkins API and store the JSON response in a variable
-           response=$(curl -s "$JENKINS_URL/job/$JOB_NAME/lastBuild/api/json")
-        # Extract the result field from the JSON response using jq (a command-line JSON processor)
-           result=$(echo "$response" | jq -r '.result')
-        # Check if the result is "true"
-           if [ "$result" = "SUCCESS" ]; then
-             echo "Result is true, breaking out of loop"
-             break
-           else
-             echo "Result is not true, sleeping for 5 seconds..."
-             sleep 5
-           fi
-           done
+        - name: trigger Jenkins
+          run: |
+            echo "Executing Jenkins pipeline"
+            curl --user $user:$token "$JENKINS_URL/job/$JOB_NAME?delay=0sec" -X POST
+        - name: wait for Jenkins jobs to complete
+          run: | 
+            while true; do
+              # Make a GET request to your Jenkins API and store the JSON response in a variable
+              response=$(curl -s "$JENKINS_URL/job/$JOB_NAME/lastBuild/api/json")
+              # Extract the result field from the JSON response using jq (a command-line JSON processor)
+              result=$(echo "$response" | jq -r '.result')
+              # Check if the result is "true"
+              if [ "$result" = "SUCCESS" ]; then
+                echo "Result is true, breaking out of loop"
+                break
+              else
+                echo "Result is not true, sleeping for 5 seconds..."
+                sleep 5
+              fi
+            done
