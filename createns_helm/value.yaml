@@ -2,6 +2,9 @@
 namespaces:
   - wd-stacka
   - wd-dev
+  - development
+  - stage
+  - production
 helmResourcePolicy: keep
 annotations:
   certmanager.k8s.io/disable-validation: true

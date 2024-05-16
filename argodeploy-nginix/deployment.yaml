@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx
-  namespace: argo-demo
+  namespace: default
   labels:
     app.kubernetes.io/name: nginx
 spec:
@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: nginx:latest
+        image: 960456129040.dkr.ecr.us-east-1.amazonaws.com/pepoc-test1:latest
         ports:
           - name: http
             containerPort: 80
