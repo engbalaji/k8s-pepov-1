@@ -27,5 +27,9 @@ deploy:
                 echo "Result is not TRUE, sleeping for 5 seconds..."
                 sleep 5
               fi
-
             done
+    storeState:
+      before:
+        - name: Deployment refresh 
+          run: |
+            kubectl rollout restart deployment tweetapp-pepoc-test2
