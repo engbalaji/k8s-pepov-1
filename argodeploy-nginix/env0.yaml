@@ -21,7 +21,7 @@ deploy:
 
               # Check if the result is "true"
               if [ "$result" = "SUCCESS" ]; then
-                echo "Result is true, breaking out of loop"
+                echo "Result is TRUE, breaking out of loop"
                 break
               else
                 echo "Result is not TRUE, sleeping for 5 seconds..."
