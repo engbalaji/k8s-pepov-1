@@ -33,4 +33,4 @@ deploy:
         - name: Deployment refresh 
           run: |
             kubectl rollout restart deployment tweetapp-pepoc-test2
-            kubectl status restart deployment tweetapp-pepoc-test2
+            kubectl rollout status deployment tweetapp-pepoc-test2
