@@ -3,7 +3,7 @@ pipeline {
  environment {
  AWS_ACCOUNT_ID = "960456129040"
  AWS_DEFAULT_REGION = "us-east-1"
- IMAGE_REPO_NAME = "tweetapp-pepoc-test2"
+ IMAGE_REPO_NAME = "tweetapp2-pepoc-test2"
  IMAGE_TAG = "latest"
  GITHUB_ID = "16543564"
  GITHUB_REPO = "https://github.com/engbalaji/k8s-pepov-1.git"
