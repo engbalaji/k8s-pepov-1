@@ -18,6 +18,7 @@ deploy:
 
               # Extract the result field from the JSON response using jq (a command-line JSON processor)
               result=$(echo "$response" | jq -r '.result')
+              echo "$result"
 
               # Check if the result is "true"
               if [ "$result" = "SUCCESS" ]; then
