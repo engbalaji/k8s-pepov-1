@@ -1,7 +1,15 @@
-{{- range .Values.namespaces }}
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: {{ .name }}
-{{- end }}
+  name: {{ .Values.namespaces.development }}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.namespaces.staging }}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.namespaces.production }}

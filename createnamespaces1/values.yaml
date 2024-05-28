@@ -1,4 +1,4 @@
 namespaces:
-  - name: development
-  - name: staging
-  - name: production
+  development: development
+  staging: staging
+  production: production
