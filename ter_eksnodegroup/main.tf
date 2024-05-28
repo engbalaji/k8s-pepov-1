@@ -20,14 +20,13 @@ resource "aws_eks_node_group" "example_nodes" {
   
   
   scaling_config {
-    desired_size = 2
-    max_size     = 3
-    min_size     = 1
-
+    desired_size = var.desired_size
+    max_size     = var.max_size
+    min_size     = var.min_size
   }
 
   remote_access {
-    ec2_ssh_key = "Balaji Mariyappan"
+    ec2_ssh_key = var.ec2_ssh_key
   }
 
   # Tag the nodes in the node group
@@ -45,12 +44,13 @@ resource "aws_eks_node_group" "example_nodes_2" {
   capacity_type = "SPOT"
   
   scaling_config {
-    desired_size = 1
-    max_size     = 2
-    min_size     = 1
+    desired_size = var.desired_size
+    max_size     = var.max_size
+    min_size     = var.min_size
   }
+
   remote_access {
-    ec2_ssh_key = "Balaji Mariyappan"
+    ec2_ssh_key = var.ec2_ssh_key
   }
 
   # Tag the nodes in the node group
