@@ -7,11 +7,5 @@ environments:
     templateName: 'eks_nodegrp_creation'
     needs:
       - EKSCluster
-  ARGOCDInstall:
-   name: 'ARGOCDInstall'
-   templateName: 'argocd_install_exiseks'
-   needs:
-    - EKSCluster
-    - EKSNodegroup
 settings:
   environmentRemovalStrategy: destroy
