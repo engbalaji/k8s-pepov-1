@@ -13,6 +13,24 @@ variable "cluster_name" {
     
 } 
 
+variable "eks_role_arn" {
+  description = "EKS IAM Role ARN"
+  type        = string
+  default     = "arn:aws:iam::960456129040:role/SpaceLift_SSPOC_Role"
+}
+
+variable "sg_use" {
+  description = "Security Group to be used"
+  type        = string
+  default     = "test_bm_sg_app"
+}
+
+variable "ec2_ssh_key" {
+  description = "EC2 SSH Key"
+  type        = string
+  default     = "Balaji Mariyappan"
+}
+
 variable "release_name" {
   type        = string
   description = "Helm release name"
