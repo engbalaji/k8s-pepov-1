@@ -1,17 +1,11 @@
 environments:
-  EKSCluster:
-    name: 'EKSCluster'
-    templateName: 'eks_cluster_creation'
-  EKSNodegroup:
-    name: 'EKS Nodegroup'
-    templateName: 'eks_nodegrp_creation'
-    needs:
-      - EKSCluster
+  CreateNamespace:
+    name: 'CreateNamespace'
+    templateName: 'createns-k8s'
   ARGOCDInstall:
    name: 'ARGOCDInstall'
    templateName: 'argocd_install_exiseks'
    needs:
-    - EKSCluster
-    - EKSNodegroup
+    - CreateNamespace
 settings:
   environmentRemovalStrategy: destroy
