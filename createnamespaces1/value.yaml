@@ -1,4 +1,4 @@
 namespaces:
-  development: development
-  staging: staging
-  production: production
+  - name: development:
+  - name: qa
+  - name: production
