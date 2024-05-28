@@ -1,7 +1,7 @@
 environments:
   CreateNamespace:
     name: 'CreateNamespace'
-    templateName: 'createns-k8s'
+    templateName: 'createns-helm'
   ARGOCDInstall:
    name: 'ARGOCDInstall'
    templateName: 'argocd_install_exiseks'
