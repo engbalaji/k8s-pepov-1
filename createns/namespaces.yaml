@@ -17,4 +17,4 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: Tech_services
+  name: Tech-service
