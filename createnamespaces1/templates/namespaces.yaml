@@ -16,12 +16,9 @@ spec:
             - /bin/sh
             - -c
             - |
-              if ! kubectl get namespace {{ .Values.namespaces.development }}; then
-                kubectl create namespace {{ .Values.namespaces.development }}
-              fi
-              if ! kubectl get namespace {{ .Values.namespaces.staging }}; then
-                kubectl create namespace {{ .Values.namespaces.staging }}
-              fi
-              if ! kubectl get namespace {{ .Values.namespaces.production }}; then
-                kubectl create namespace {{ .Values.namespaces.production }}
-              fi
+              for namespace in {{ .Values.namespaces.development }} {{ .Values.namespaces.staging }} {{ .Values.namespaces.production }}
+              do
+                if ! kubectl get namespace $namespace; then
+                  kubectl create namespace $namespace
+                fi
+              done
