@@ -1,4 +1,4 @@
 namespaces:
-  development: development
-  staging: staging
-  production: production
+  development: tnl-env-dev001
+  staging: tnl-env-qaa001
+  production: tnl-env-prd001
