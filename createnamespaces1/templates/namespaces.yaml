@@ -1,15 +1,27 @@
----
-apiVersion: v1
-kind: Namespace
+apiVersion: batch/v1
+kind: Job
 metadata:
-  name: {{ .Values.namespaces.development }}
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: {{ .Values.namespaces.staging }}
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: {{ .Values.namespaces.production }}
+  name: namespace-creator
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: kubectl
+          image: bitnami/kubectl
+          command:
+            - /bin/sh
+            - -c
+            - |
+              if ! kubectl get namespace {{ .Values.namespaces.development }}; then
+                kubectl create namespace {{ .Values.namespaces.development }}
+              fi
+              if ! kubectl get namespace {{ .Values.namespaces.staging }}; then
+                kubectl create namespace {{ .Values.namespaces.staging }}
+              fi
+              if ! kubectl get namespace {{ .Values.namespaces.production }}; then
+                kubectl create namespace {{ .Values.namespaces.production }}
+              fi
