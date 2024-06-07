@@ -1,4 +1,3 @@
-namespaces:
-  development: tnl-env-dev001
-  staging: tnl-env-qaa001
-  production: tnl-env-prd001
+namespaces1: dev
+namespaces2: qa
+namespaces3: prod
