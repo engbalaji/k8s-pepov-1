@@ -2,19 +2,19 @@ apiVersion: v1
 kind: Namespace
 metadata:
   annotations:
-    owner: andrew way
+    owner: BalajiM
   name: {{ .Values.namespace1 }}
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
   annotations:
-    owner: andrew way
+    owner: BalajiM
   name: {{ .Values.namespace2 }}
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
   annotations:
-    owner: andrew way
+    owner: BalajiM
   name: {{ .Values.namespace3 }}
