@@ -13,6 +13,7 @@ data "aws_security_group" "existing_sg" {
 resource "aws_eks_cluster" "my_cluster" {
   name     = var.cluster_name
   role_arn = var.eks_role_arn
+  version  = var.eks_version
   tags = {
     Name = var.cluster_name
 

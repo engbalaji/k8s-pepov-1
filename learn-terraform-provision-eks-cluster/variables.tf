@@ -31,6 +31,12 @@ variable "sg_use" {
   default     = "test_bm_sg_app"
 }
 
+variable "eks_version" {
+  description = "EKS version"
+  type        = string
+  default     = "1.30"
+}
+
 variable "ec2_ssh_key" {
   description = "EC2 SSH Key"
   type        = string
