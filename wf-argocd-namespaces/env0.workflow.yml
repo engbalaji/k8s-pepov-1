@@ -7,12 +7,5 @@ environments:
     templateName: 'argocd_install_exiseks'
     needs:
       - CreateNamespace
-  DeleteArgoCDCRDs:
-    name: 'DeleteArgoCDCRDs'
-    templateName: 'delete_argocd_crds'
-    needs:
-      - ARGOCDInstall
-    when:
-      - destroy
 settings:
   environmentRemovalStrategy: destroy
