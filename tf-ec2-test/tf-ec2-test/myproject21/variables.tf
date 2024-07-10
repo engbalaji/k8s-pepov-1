@@ -31,3 +31,10 @@ variable "volume_size" {
   type        = number 
   default     = 33
   }
+  
+  variable "encrypted" {
+    description = "Flag to indicate if the EBS volume should be encrypted"
+    type        = bool
+    default     = true
+  }
+  
