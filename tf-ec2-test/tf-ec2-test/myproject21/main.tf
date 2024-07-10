@@ -29,8 +29,3 @@ resource "aws_volume_attachment" "ebs_att" {
   volume_id   = aws_ebs_volume.example_ebs_volume.id
   instance_id = aws_instance.example1.id
 }
-
-# output.tf
-output "instance1_private_ip" {
-  value = aws_instance.example1.private_ip
-}
