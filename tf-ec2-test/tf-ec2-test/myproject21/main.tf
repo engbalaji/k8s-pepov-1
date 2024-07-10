@@ -18,6 +18,7 @@ resource "aws_instance" "example1" {
 resource "aws_ebs_volume" "example_ebs_volume" {
   availability_zone = var.availability_zone
   size              = var.volume_size # Specify the size of the volume in GiBs
+  encrypted         = true
 
   tags = {
     Name = "ExampleEBSVolume"
