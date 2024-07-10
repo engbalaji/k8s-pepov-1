@@ -19,3 +19,13 @@ variable "instance1_name" {
 variable "my-key-pair" {
   default = "Balaji Mariyappan"
 }
+
+variable "availability_zone" {
+  description = "The availability zone to launch the EBS volume in"
+  type        = string
+}
+
+variable "volume_size" {
+  description = "The size of the EBS volume in GiBs"
+  type        = 33 # Specify the size of the volume in GiBs
+}
