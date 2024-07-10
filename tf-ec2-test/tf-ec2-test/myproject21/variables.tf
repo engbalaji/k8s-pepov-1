@@ -23,6 +23,7 @@ variable "my-key-pair" {
 variable "availability_zone" {
   description = "The availability zone to launch the EBS volume in"
   type        = string
+  default     = "us-east-1a"
 }
 
 variable "volume_size" {
