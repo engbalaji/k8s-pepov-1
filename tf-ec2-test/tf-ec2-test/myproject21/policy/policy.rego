@@ -27,8 +27,8 @@ ami_check {
 
 # Allow the build if all checks pass
 allow = allowed_checks {
-	allowed_checks := [check | check := "instance_size_check"; instance_size_check]
-	allowed_checks := allowed_checks & [check | check := "volume_encryption_check"; volume_encryption_check]
-	allowed_checks := allowed_checks & [check | check := "no_public_interface_check"; no_public_interface_check]
-	allowed_checks := allowed_checks & [check | check := "ami_check"; ami_check]
+	allowed_checks := concat([], [check | check := "instance_size_check"; instance_size_check])
+	allowed_checks := concat(allowed_checks, [check | check := "volume_encryption_check"; volume_encryption_check])
+	allowed_checks := concat(allowed_checks, [check | check := "no_public_interface_check"; no_public_interface_check])
+	allowed_checks := concat(allowed_checks, [check | check := "ami_check"; ami_check])
 }
