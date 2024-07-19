@@ -1,6 +1,6 @@
 package env0
 
-default allow = false
+default allow = []
 
 # Check if the instance type is larger than t3.medium
 instance_size_check {
@@ -20,9 +20,15 @@ no_public_interface_check {
 	input.public_ip == false
 }
 
+# Check if the AMI is Amazon Linux 2
+ami_check {
+	input.ami_id == "ami-0c55b159cbfafe1f0" # Replace with the actual Amazon Linux 2 AMI ID for your region
+}
+
 # Allow the build if all checks pass
-allow {
-	instance_size_check
-	volume_encryption_check
-	no_public_interface_check
+allow = allowed_checks {
+	allowed_checks := [check | check := "instance_size_check"; instance_size_check]
+	allowed_checks := allowed_checks & [check | check := "volume_encryption_check"; volume_encryption_check]
+	allowed_checks := allowed_checks & [check | check := "no_public_interface_check"; no_public_interface_check]
+	allowed_checks := allowed_checks & [check | check := "ami_check"; ami_check]
 }
