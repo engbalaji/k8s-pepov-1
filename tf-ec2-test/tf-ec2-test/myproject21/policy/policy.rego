@@ -26,9 +26,9 @@ ami_check {
 }
 
 # Allow the build if all checks pass
-allow = [check | 
-	check := "instance_size_check"; instance_size_check
-	check := "volume_encryption_check"; volume_encryption_check
-	check := "no_public_interface_check"; no_public_interface_check
-	check := "ami_check"; ami_check
+allow = [check |
+	instance_size_check; check := "instance_size_check"
+	volume_encryption_check; check := "volume_encryption_check"
+	no_public_interface_check; check := "no_public_interface_check"
+	ami_check; check := "ami_check"
 ]
