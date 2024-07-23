@@ -11,7 +11,7 @@ resource "kubernetes_namespace" "gatekeeper" {
 }
 
 module "opa_gatekeeper" {
-  source    = "project-octal/opa-gatekeeper/kubernetes"
+  source    = "github.com/project-octal/opa-gatekeeper//kubernetes?ref=0.1.0"
   namespace = kubernetes_namespace.gatekeeper.metadata[0].name
   version   = "0.1.0"
 }
