@@ -11,7 +11,7 @@ resource "kubernetes_namespace" "gatekeeper" {
 }
 
 module "opa_gatekeeper" {
-  source    = "github.com/project-octal/terraform-kubernetes-opa-gatekeeper"
+  source    = "git::https://github.com/project-octal/terraform-kubernetes-opa-gatekeeper"
   namespace = kubernetes_namespace.gatekeeper.metadata[0].name
     version   = "0.1.0"
     cluster_ca_certificate = base64decode(var.k8s_ca_certificate)
