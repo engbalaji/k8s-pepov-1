@@ -1,6 +1,6 @@
 package env0
 
-default allow = []
+default deny = []
 
 # Check if the instance type is larger than t3.medium
 instance_size_check {
