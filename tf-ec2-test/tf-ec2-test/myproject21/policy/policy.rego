@@ -7,7 +7,7 @@ allowed_instance_types = {"t2.micro", "t2.small", "t2.medium"}
 deny[msg] {
     input.request.operation == "RunInstances"
     some i
-    not input.request.parameters.BlockDeviceMappings[i].Ebs.Encrypted
+    not input.request.parameters.BlockDeviceMappings[_].Ebs.Encrypted
     msg := "EBS encryption must be enabled for all instances."
 }
 
@@ -22,6 +22,6 @@ deny[msg] {
 deny[msg] {
     input.request.operation == "RunInstances"
     some i
-    input.request.parameters.NetworkInterfaces[i].AssociatePublicIpAddress == true
+    input.request.parameters.NetworkInterfaces[_].AssociatePublicIpAddress == true
     msg := "Instances must not have a public IP address."
 }
