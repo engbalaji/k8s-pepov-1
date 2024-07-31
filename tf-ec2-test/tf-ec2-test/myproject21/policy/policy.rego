@@ -6,7 +6,8 @@ allowed_instance_types = {"t2.micro", "t2.small", "t2.medium"}
 # Deny EC2 instance creation if EBS encryption is not enabled
 deny[msg] {
     input.request.operation == "RunInstances"
-    not input.request.parameters.BlockDeviceMappings[_].Ebs.Encrypted
+    some i
+    not input.request.parameters.BlockDeviceMappings[i].Ebs.Encrypted
     msg := "EBS encryption must be enabled for all instances."
 }
 
@@ -20,6 +21,7 @@ deny[msg] {
 # Deny EC2 instance creation if a public IP address is assigned
 deny[msg] {
     input.request.operation == "RunInstances"
-    input.request.parameters.NetworkInterfaces[_].AssociatePublicIpAddress == true
+    some i
+    input.request.parameters.NetworkInterfaces[i].AssociatePublicIpAddress == true
     msg := "Instances must not have a public IP address."
 }
