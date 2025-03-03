@@ -13,7 +13,7 @@ resource "helm_release" "kafka" {
   namespace  = "default"
   repository = "https://charts.bitnami.com/bitnami"
   chart      = "kafka"
-  version    = "14.6.1"  # Use the latest version available
+  version    = "15.2.3"  # Use the latest version available
 
   set {
     name  = "replicaCount"
