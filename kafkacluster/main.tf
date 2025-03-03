@@ -8,12 +8,13 @@ provider "helm" {
   }
 }
 
-resource "helm_release" "kafka" {
-  name       = "kafka"
+resource "helm_release" "strimzi-kafka" {
+  name       = "strimzi-kafka"
   namespace  = "default"
-  repository = "https://charts.bitnami.com/bitnami"
-  chart      = "kafka"
-  version    = "15.2.3"  # Use the latest version available
+  repository = "https://strimzi.io/charts/"
+  chart      = "strimzi-kafka-operator"
+  version    = "0.30.0"  # Use a version from the search results
+  // additional configuration...
 
   set {
     name  = "replicaCount"
