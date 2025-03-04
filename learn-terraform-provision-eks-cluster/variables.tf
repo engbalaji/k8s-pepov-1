@@ -34,7 +34,7 @@ variable "sg_use" {
 variable "eks_version" {
   description = "EKS version"
   type        = string
-  default     = "1.30"
+  default     = "1.32"
 }
 
 variable "ec2_ssh_key" {
