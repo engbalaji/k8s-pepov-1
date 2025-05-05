@@ -17,6 +17,6 @@ resource "aws_instance" "example1" {
   }
 }
 
-output "instance1_private_ip" {
-  value = aws_instance.example1.private_ip
-}
+#output "instance1_private_ip" {
+#  value = aws_instance.example1.private_ip
+#}
