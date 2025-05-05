@@ -1,19 +1,20 @@
 provider "kubernetes" {
-  config_path = "~/.kube/config"
+  config_path = "/home/ec2-user/.kube/config"
 }
 
 provider "helm" {
   kubernetes {
-    config_path = "~/.kube/config"
+    config_path = "/home/ec2-user/.kube/config"
   }
 }
 
-resource "helm_release" "kafka" {
-  name       = "kafka"
+resource "helm_release" "strimzi-kafka" {
+  name       = "strimzi-kafka"
   namespace  = "default"
-  repository = "https://charts.bitnami.com/bitnami"
-  chart      = "kafka"
-  version    = "14.6.1"  # Use the latest version available
+  repository = "https://strimzi.io/charts/"
+  chart      = "strimzi-kafka-operator"
+  version    = "0.30.0"  # Use a version from the search results
+  // additional configuration...
 
   set {
     name  = "replicaCount"
