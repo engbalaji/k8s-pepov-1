@@ -1,0 +1,174 @@
+pipeline {
+    agent {
+        label 'master'
+    }
+    parameters {
+        string(name: 'ENVIRONMENT', description: 'Environment to deploy to')
+        string(name: 'AMI_ID', description: 'AMI ID for the nodes')
+        booleanParam(name: 'DESTROY_MODE', defaultValue: false, description: 'Destroys the infrastructure - ye be warned')
+    }
+    stages {
+        stage('Initialize secret reference') {
+            steps {
+                script {
+                    if(params.ENVIRONMENT == "lab") {
+                        env.SECRET_ID = "itops-lab"
+                    } else if (params.ENVIRONMENT == "prod") {
+                        env.SECRET_ID = "itops-p"
+                    } else {
+                        env.SECRET_ID = "itops-np"
+                    }
+                }
+            }
+        }
+        stage('Initialize Terraform') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: env.SECRET_ID, usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]){
+                    script {
+                        OBJECT_KEY="odm/${params.ENVIRONMENT}/state.tfstate"
+                        sh """
+                            export BUCKET_NAME=\$(jq -r '.s3_bucket_name' config/${params.ENVIRONMENT}.json)
+                            export BUCKET_REGION=\$(jq -r '.s3_bucket_region' config/${params.ENVIRONMENT}.json)
+                            terraform init \\
+                                -backend-config="bucket=\$BUCKET_NAME" \\
+                                -backend-config="region=\$BUCKET_REGION" \\
+                                -backend-config="key=${OBJECT_KEY}"
+                        """
+                    }
+                }
+            }
+        }
+        stage('Terraform Plan') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: env.SECRET_ID, usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]){
+                    script {
+                        DESTROY_FLAG = params.DESTROY_MODE ? "-destroy" : ""
+                        sh """
+                            export CURRENT_IP=\$(hostname -i)
+                            terraform plan \\
+                                -var="environment=${params.ENVIRONMENT}" \\
+                                -var="jenkins_ip=\$(hostname -i)" \\
+                                -var="ami_id=${params.AMI_ID}" \\
+                                -var-file="config/${params.ENVIRONMENT}.tfvars" \\
+                                -out="tfplan" \\
+                                -no-color \\
+                                ${DESTROY_FLAG}
+                        """
+                    }
+                }
+            }
+        }
+        stage('Terraform Apply') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: env.SECRET_ID, usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]){
+                    script {
+                        sh """
+                            terraform apply -input=false -no-color -auto-approve tfplan
+                        """
+                    }
+                }
+            }
+        }
+        stage('Connect to cluster') {
+            when {
+                expression {
+                    return params.DESTROY_MODE == false
+                }
+            }
+            steps {
+                withCredentials([usernamePassword(credentialsId: env.SECRET_ID, usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]){
+                    script {
+                        env.CLUSTER_NAME="eks-odm-${params.ENVIRONMENT}-cluster"
+                        sh """
+                            export DEPLOY_REGION=\$(jq -r '.deployment_region' config/${params.ENVIRONMENT}.json)
+                            aws eks update-kubeconfig --name ${env.CLUSTER_NAME} --region \$DEPLOY_REGION --kubeconfig kubeconfig_${params.ENVIRONMENT}
+                        """
+                    }
+                }
+            }
+        }
+        // note - there is a bug here where it doesn't fully deploy if the created cfn stack is not deleted
+        // prior to a re-deploy
+        stage('Install AWS ELB K8s controller') {
+            when {
+                expression {
+                    return params.DESTROY_MODE == false
+                }
+            }
+            steps {
+                withCredentials([usernamePassword(credentialsId: env.SECRET_ID, usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]){
+                    script {
+                        env.CLUSTER_NAME="eks-odm-${params.ENVIRONMENT}-cluster"
+                        env.CONTROLLER_POLICY_NAME="odm-${params.ENVIRONMENT}-load-balancer-controller-policy"
+                        sh """
+                            export DEPLOY_REGION=\$(jq -r '.deployment_region' config/${params.ENVIRONMENT}.json)
+                            export AWS_ACCOUNT_ID=\$(aws sts get-caller-identity --query Account --output text --region \$DEPLOY_REGION)
+                            ~/eksctl create iamserviceaccount \\
+                                --region=\$DEPLOY_REGION \\
+                                --cluster=${env.CLUSTER_NAME} \\
+                                --namespace=kube-system \\
+                                --name=aws-load-balancer-controller \\
+                                --role-name=AWSLoadBalancerControllerIAMRole_${env.CLUSTER_NAME} \\
+                                --attach-policy-arn=arn:aws:iam::\${AWS_ACCOUNT_ID}:policy/${env.CONTROLLER_POLICY_NAME} \\
+                                --override-existing-serviceaccounts \\
+                                --approve
+                            ~/helm repo add eks https://aws.github.io/eks-charts
+                            ~/helm repo update
+                            ~/helm upgrade --install --kubeconfig kubeconfig_${params.ENVIRONMENT} aws-load-balancer-controller eks/aws-load-balancer-controller --set serviceAccount.create=false --set serviceAccount.name=aws-load-balancer-controller --set clusterName=\$CLUSTER_NAME -n kube-system
+                        """
+                    }
+                }
+            }
+        }
+        stage('Deploy Wiz') {
+            when {
+                expression {
+                    return params.DESTROY_MODE == false
+                }
+            }
+            steps {
+                withCredentials([
+                    usernamePassword(credentialsId: env.SECRET_ID, usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY'),
+                    usernamePassword(credentialsId: 'wiz-sensor-image-pull', usernameVariable: 'WIZ_IMAGE_PULL_SECRET_USERNAME', passwordVariable: 'WIZ_IMAGE_PULL_SECRET_PASSWORD'),
+                    usernamePassword(credentialsId: 'wiz-api-token', usernameVariable: 'WIZ_SECRET_CLIENT_ID', passwordVariable: 'WIZ_SECRET_CLIENT_SECRET')
+                    ]){
+                    script {
+                        env.CLUSTER_NAME="eks-${params.ENVIRONMENT}-cluster"
+                        sh """
+                            set +x
+                            export DEPLOY_REGION=\$(jq -r '.deployment_region' config/${params.ENVIRONMENT}.json)
+                            set -x
+                            ~/helm repo add wiz-sec https://charts.wiz.io
+                            ~/helm repo update
+
+                            # only create the namespace if it doesn't exist
+                            if ~/kubectl --kubeconfig kubeconfig_${params.ENVIRONMENT} get namespace | grep -q "wiz"; then
+                                echo "Namespace wiz already exists"
+                            else
+                                ~/kubectl --kubeconfig kubeconfig_${params.ENVIRONMENT} create namespace wiz
+                            fi
+                            # set +x
+                            # create or update the image pull secret
+                            ~/kubectl --kubeconfig kubeconfig_${params.ENVIRONMENT} -n wiz create secret docker-registry sensor-image-pull \\
+                                --docker-server=wizio.azurecr.io \\
+                                --docker-username=\$WIZ_IMAGE_PULL_SECRET_USERNAME \\
+                                --docker-password=\$WIZ_IMAGE_PULL_SECRET_PASSWORD \\
+                                --dry-run=client -o yaml | ~/kubectl --kubeconfig kubeconfig_${params.ENVIRONMENT} apply -f -
+                            ~/kubectl --kubeconfig kubeconfig_${params.ENVIRONMENT} -n wiz create secret generic wiz-api-token \\
+                                --from-literal=clientId=\$WIZ_SECRET_CLIENT_ID \\
+                                --from-literal=clientToken=\$WIZ_SECRET_CLIENT_SECRET \\
+                                --dry-run=client -o yaml | ~/kubectl --kubeconfig kubeconfig_${params.ENVIRONMENT} apply -f -
+
+                            ~/helm upgrade --kubeconfig kubeconfig_${params.ENVIRONMENT} --install wiz-integration wiz-sec/wiz-kubernetes-integration --values "wiz/${params.ENVIRONMENT}.yaml" --create-namespace -n wiz --debug
+                        """
+                    }
+                }
+            }
+        }
+    }
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}

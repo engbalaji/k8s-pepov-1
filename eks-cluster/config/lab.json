@@ -1,0 +1,6 @@
+{
+    "s3_bucket_name": "deriks-test-bucket",
+    "s3_bucket_region": "us-west-2",
+    "deployment_region": "us-east-1",
+    "secret_id": "itops-lab"
+}

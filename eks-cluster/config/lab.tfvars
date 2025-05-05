@@ -1,0 +1,32 @@
+vpc_id                  = "vpc-b30658d4"
+subnet_id_a             = "subnet-89eb03a4"
+subnet_id_b             = "subnet-b64d14ff"
+environment             = "lab"
+kubernetes_version      = "1.30"
+cloud_services_role_arn = "arn:aws:iam::960456129040:role/aws-reserved/sso.amazonaws.com/us-west-2/AWSReservedSSO_AWSAdministratorAccess_6761273c3babe23a"
+alternate_role_arn      = "arn:aws:iam::960456129040:role/DerikKMSAdministratorTestRole"
+ami_id                  = "ami-0907de6ca684243fb"
+min_node_cpu_count      = 2
+max_node_cpu_count      = 4
+min_node_mem_GiB        = 2
+max_node_mem_GiB        = 16
+cluster_min_capacity    = 3
+cluster_max_capacity    = 6
+aws_region              = "us-east-1"
+cluster_cidr            = "172.16.0.0/20"
+instance_types = [
+  "c5.large", "c5.xlarge", "c5.2xlarge",
+  "c5a.large", "c5a.xlarge", "c5a.2xlarge",
+  "c6i.large", "c6i.xlarge", "c6i.2xlarge",
+  "c6a.large", "c6a.xlarge", "c6a.2xlarge",
+  "c7i.large", "c7i.xlarge", "c7i.2xlarge",
+  "c7a.large", "c7a.xlarge", "c7a.2xlarge",
+  "m5.large", "m5.xlarge", "m5.2xlarge",
+  "m5a.large", "m5a.xlarge", "m5a.2xlarge",
+  "m6i.large", "m6i.xlarge", "m6i.2xlarge",
+  "m6a.large", "m6a.xlarge", "m6a.2xlarge",
+  "m7i.large", "m7i.xlarge", "m7i.2xlarge",
+  "m7a.large", "m7a.xlarge", "m7a.2xlarge"
+]
+management_network_cidr                   = "10.230.0.0/16"
+security_group_revision_one_change_number = "Nah this is lab"

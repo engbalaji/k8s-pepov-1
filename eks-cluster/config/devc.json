@@ -1,0 +1,6 @@
+{
+    "s3_bucket_name": "wynd-automation-archive-126328229668-us-west-2",
+    "s3_bucket_region": "us-west-2",
+    "deployment_region": "us-west-2",
+    "secret_id": "itops-np"
+}
